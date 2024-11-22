@@ -1,23 +1,26 @@
 import os
 import time
+import asyncio
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 import cloudscraper
 import telegram
 
-load_dotenv()
 
+
+load_dotenv()
 
 interval_str = os.getenv('INTERVAL')
 if interval_str is None:
     raise ValueError("interval is invalid")
 
 interval = int(interval_str)
-chat_id = os.getenv('CHAT_ID')
+chat = os.getenv('CHAT')
 message = os.getenv('MESSAGE')
-token = os.getenv('TG_BOT')
+token = os.getenv('TOKEN')
 link = os.getenv("LINK")
+
 
 scrapper = cloudscraper.create_scraper()
 if token is None:
@@ -27,7 +30,7 @@ bot = telegram.Bot(token=token)
 
 past_link = None
 
-def main():
+async def main():
     global past_link
     while True:
         try:
@@ -43,9 +46,11 @@ def main():
             new_link = sended_link - past_link
             past_link = sended_link
 
+            print(new_link)
+
             for i in new_link:
                 message_to_send = f'{message} https://www.hltv.org{i}'
-                bot.send_message(chat_id=chat_id, message=message_to_send)
+                await bot.send_message(chat_id=chat, text=message_to_send)
             
         except Exception as e:
             print(e)
@@ -54,4 +59,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
+    
