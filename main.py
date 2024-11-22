@@ -5,8 +5,7 @@ import asyncio
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 import cloudscraper
-import telegram
-
+from aiogram import Bot
 
 
 load_dotenv()
@@ -21,12 +20,11 @@ message = os.getenv('MESSAGE')
 token = os.getenv('TOKEN')
 link = os.getenv("LINK")
 
-
-scrapper = cloudscraper.create_scraper()
 if token is None:
     raise ValueError("token is invalid")
 
-bot = telegram.Bot(token=token)
+bot = Bot(token=token)
+scrapper = cloudscraper.create_scraper()
 
 past_link = None
 
